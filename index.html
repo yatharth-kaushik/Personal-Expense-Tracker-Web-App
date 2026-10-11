@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Expense Tracker | Personal Finance Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="app-container">
+
+  <!-- ===================== MOBILE TOP HEADER ===================== -->
+  <header class="mobile-header">
+    <button class="icon-btn" id="mobileMenuBtn" aria-label="Open menu">☰</button>
+    <div class="mobile-logo"><span class="logo-mark">💰</span> Expense Tracker</div>
+    <button class="icon-btn" id="mobileThemeBtn" aria-label="Toggle theme">🌙</button>
+  </header>
+
+  <!-- ===================== SIDEBAR ===================== -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="logo-mark">💰</div>
+      <span class="app-name">Expense<span>Tracker</span></span>
+      <button class="sidebar-close" id="sidebarCloseBtn" aria-label="Close menu">&times;</button>
+    </div>
+
+    <nav class="sidebar-nav">
+      <button class="nav-item active" data-page="dashboard"><span class="nav-icon">🏠</span> Dashboard</button>
+      <button class="nav-item" data-page="all-expenses"><span class="nav-icon">📄</span> All Expenses</button>
+      <button class="nav-item" data-page="add-expense"><span class="nav-icon">➕</span> Add Expense</button>
+      <button class="nav-item" data-page="monthly-summary"><span class="nav-icon">📅</span> Monthly Summary</button>
+      <button class="nav-item" data-page="category-analysis"><span class="nav-icon">📊</span> Category Analysis</button>
+      <button class="nav-item" data-page="settings"><span class="nav-icon">⚙️</span> Settings</button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-profile">
+        <div class="user-avatar">U</div>
+        <div class="user-info">
+          <span class="user-name">Personal Account</span>
+          <span class="user-role">Local Storage</span>
+        </div>
+      </div>
+      <button class="theme-toggle" id="themeToggleBtn" title="Toggle dark mode">
+        <span id="themeIcon">🌙</span>
+      </button>
+    </div>
+  </aside>
+
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- ===================== MAIN CONTENT ===================== -->
+  <main class="main-content">
+
+    <!-- ============ DASHBOARD PAGE ============ -->
+    <section class="page active" id="page-dashboard">
+      <div class="page-header">
+        <div>
+          <h1 id="greetingText">Good evening 👋</h1>
+          <p class="page-subtitle">Here's your spending overview.</p>
+        </div>
+        <div class="date-indicator" id="dateIndicator">—</div>
+      </div>
+
+      <div class="summary-cards">
+        <div class="stat-card">
+          <div class="stat-icon icon-total">💳</div>
+          <div class="stat-body">
+            <span class="stat-label">Total Spending</span>
+            <span class="stat-value" id="statTotalSpending">₹0.00</span>
+            <span class="stat-sub" id="statTotalSub">All-time total</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon icon-month">📅</div>
+          <div class="stat-body">
+            <span class="stat-label">This Month</span>
+            <span class="stat-value" id="statThisMonth">₹0.00</span>
+            <span class="stat-sub" id="statMonthSub">—</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon icon-count">🧾</div>
+          <div class="stat-body">
+            <span class="stat-label">Number of Expenses</span>
+            <span class="stat-value" id="statCount">0</span>
+            <span class="stat-sub">Recorded transactions</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon icon-avg">📈</div>
+          <div class="stat-body">
+            <span class="stat-label">Average Expense</span>
+            <span class="stat-value" id="statAverage">₹0.00</span>
+            <span class="stat-sub">Per transaction</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="dashboard-grid">
+        <div class="panel recent-panel">
+          <div class="panel-header">
+            <h2>Recent Expenses</h2>
+            <button class="btn btn-text" data-nav="all-expenses">View All Expenses →</button>
+          </div>
+          <div id="recentExpensesList"></div>
+        </div>
+
+        <div class="panel top-category-panel">
+          <div class="panel-header">
+            <h2>Top Categories</h2>
+            <button class="btn btn-text" data-nav="category-analysis">Details →</button>
+          </div>
+          <div id="dashboardCategoryList"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ ALL EXPENSES PAGE ============ -->
+    <section class="page" id="page-all-expenses">
+      <div class="page-header">
+        <div>
+          <h1>All Expenses</h1>
+          <p class="page-subtitle">Browse, search and manage every recorded expense.</p>
+        </div>
+        <button class="btn btn-primary" data-nav="add-expense">+ Add Expense</button>
+      </div>
+
+      <div class="panel">
+        <div class="toolbar">
+          <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="searchInput" placeholder="Search by ID, category or description...">
+          </div>
+        </div>
+
+        <div class="filters-row">
+          <div class="filter-group">
+            <label>Category</label>
+            <select id="filterCategory">
+              <option value="all">All Categories</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label>Month</label>
+            <select id="filterMonth">
+              <option value="all">All Months</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label>Year</label>
+            <select id="filterYear">
+              <option value="all">All Years</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label>Min Amount</label>
+            <input type="number" id="filterMinAmount" placeholder="0" min="0">
+          </div>
+          <div class="filter-group">
+            <label>Max Amount</label>
+            <input type="number" id="filterMaxAmount" placeholder="Any" min="0">
+          </div>
+          <div class="filter-group filter-btn-group">
+            <button class="btn btn-secondary" id="clearFiltersBtn">Clear Filters</button>
+          </div>
+        </div>
+
+        <div class="table-wrapper">
+          <table id="expensesTable">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Amount</th>
+                <th>Category</th>
+                <th>Description</th>
+                <th>Date</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="expensesTableBody"></tbody>
+          </table>
+        </div>
+
+        <div class="empty-state hidden" id="expensesEmptyState">
+          <div class="empty-icon">🗂️</div>
+          <h3>No expenses yet</h3>
+          <p>Start tracking your spending by adding your first expense.</p>
+          <button class="btn btn-primary" data-nav="add-expense">+ Add Expense</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ ADD EXPENSE PAGE ============ -->
+    <section class="page" id="page-add-expense">
+      <div class="page-header">
+        <div>
+          <h1>Add Expense</h1>
+          <p class="page-subtitle">Record a new transaction to keep your budget up to date.</p>
+        </div>
+      </div>
+
+      <div class="panel form-panel">
+        <form id="addExpenseForm" novalidate>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="expenseAmount">Amount (₹) <span class="required">*</span></label>
+              <input type="number" id="expenseAmount" step="0.01" min="0.01" placeholder="e.g. 450.00">
+              <span class="field-error" id="errorAmount"></span>
+            </div>
+            <div class="form-group">
+              <label for="expenseCategory">Category <span class="required">*</span></label>
+              <select id="expenseCategory">
+                <option value="">Select category</option>
+              </select>
+              <span class="field-error" id="errorCategory"></span>
+            </div>
+            <div class="form-group form-group-full">
+              <label for="expenseDescription">Description <span class="required">*</span></label>
+              <input type="text" id="expenseDescription" placeholder="e.g. Lunch with team">
+              <span class="field-error" id="errorDescription"></span>
+            </div>
+            <div class="form-group">
+              <label for="expenseDate">Date <span class="required">*</span></label>
+              <input type="date" id="expenseDate">
+              <span class="field-error" id="errorDate"></span>
+            </div>
+          </div>
+          <div class="form-actions">
+            <button type="reset" class="btn btn-secondary">Reset</button>
+            <button type="submit" class="btn btn-primary">Save Expense</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- ============ MONTHLY SUMMARY PAGE ============ -->
+    <section class="page" id="page-monthly-summary">
+      <div class="page-header">
+        <div>
+          <h1>Monthly Summary</h1>
+          <p class="page-subtitle">Analyze your spending trends month by month.</p>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="filters-row">
+          <div class="filter-group">
+            <label>Month</label>
+            <select id="summaryMonth"></select>
+          </div>
+          <div class="filter-group">
+            <label>Year</label>
+            <select id="summaryYear"></select>
+          </div>
+        </div>
+      </div>
+
+      <div class="summary-cards summary-cards-5" id="monthlySummaryCards">
+        <div class="stat-card">
+          <div class="stat-icon icon-total">💳</div>
+          <div class="stat-body">
+            <span class="stat-label">Total Spending</span>
+            <span class="stat-value" id="msTotal">₹0.00</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon icon-count">🧾</div>
+          <div class="stat-body">
+            <span class="stat-label">Number of Expenses</span>
+            <span class="stat-value" id="msCount">0</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon icon-avg">📈</div>
+          <div class="stat-body">
+            <span class="stat-label">Average Expense</span>
+            <span class="stat-value" id="msAverage">₹0.00</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon icon-high">⬆️</div>
+          <div class="stat-body">
+            <span class="stat-label">Highest Expense</span>
+            <span class="stat-value" id="msHighest">₹0.00</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon icon-low">⬇️</div>
+          <div class="stat-body">
+            <span class="stat-label">Lowest Expense</span>
+            <span class="stat-value" id="msLowest">₹0.00</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header"><h2>Spending by Month (<span id="chartYearLabel"></span>)</h2></div>
+        <div class="bar-chart" id="monthlyBarChart"></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header"><h2>Expenses in Selected Month</h2></div>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>ID</th><th>Amount</th><th>Category</th><th>Description</th><th>Date</th></tr>
+            </thead>
+            <tbody id="monthlyExpensesBody"></tbody>
+          </table>
+        </div>
+        <div class="empty-state hidden" id="monthlyEmptyState">
+          <div class="empty-icon">📭</div>
+          <h3>No expenses found</h3>
+          <p>There are no recorded expenses for this month.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CATEGORY ANALYSIS PAGE ============ -->
+    <section class="page" id="page-category-analysis">
+      <div class="page-header">
+        <div>
+          <h1>Category Analysis</h1>
+          <p class="page-subtitle">See where your money goes across every category.</p>
+        </div>
+      </div>
+
+      <div class="panel category-analysis-panel">
+        <div class="donut-section">
+          <div class="donut-chart" id="donutChart">
+            <div class="donut-hole">
+              <span class="donut-hole-label">Total</span>
+              <span class="donut-hole-value" id="donutTotal">₹0.00</span>
+            </div>
+          </div>
+          <div class="donut-legend" id="donutLegend"></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header"><h2>Category Breakdown</h2></div>
+        <div id="categoryBreakdownList"></div>
+        <div class="empty-state hidden" id="categoryEmptyState">
+          <div class="empty-icon">📊</div>
+          <h3>No spending data</h3>
+          <p>Add some expenses to see your category breakdown.</p>
+        </div>
+        <div class="category-total-row" id="categoryTotalRow">
+          <span>Total Spending</span>
+          <span id="categoryGrandTotal">₹0.00</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ SETTINGS PAGE ============ -->
+    <section class="page" id="page-settings">
+      <div class="page-header">
+        <div>
+          <h1>Settings</h1>
+          <p class="page-subtitle">Manage your preferences and data.</p>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header"><h2>Appearance</h2></div>
+        <div class="setting-row">
+          <div>
+            <h3>Dark Mode</h3>
+            <p>Switch between light and dark theme. Your preference is saved automatically.</p>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="darkModeSwitch">
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header"><h2>Data Management</h2></div>
+        <div class="setting-row">
+          <div>
+            <h3>Export Data</h3>
+            <p>Download all your expenses as a CSV file.</p>
+          </div>
+          <button class="btn btn-secondary" id="exportCsvBtn">⬇ Export CSV</button>
+        </div>
+        <div class="setting-row">
+          <div>
+            <h3>Clear All Data</h3>
+            <p>Permanently delete all expenses from this browser.</p>
+          </div>
+          <button class="btn btn-danger" id="clearAllBtn">Clear All Data</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header"><h2>About</h2></div>
+        <p class="about-text">Personal Expense Tracker — a fully client-side finance dashboard built with HTML, CSS and vanilla JavaScript. All data is stored securely in your browser's local storage; nothing is sent anywhere.</p>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ===================== EDIT EXPENSE MODAL ===================== -->
+<div class="modal-overlay hidden" id="editModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>Edit Expense</h2>
+      <button class="modal-close" id="editModalClose">&times;</button>
+    </div>
+    <form id="editExpenseForm">
+      <input type="hidden" id="editId">
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="editAmount">Amount (₹) <span class="required">*</span></label>
+          <input type="number" id="editAmount" step="0.01" min="0.01">
+          <span class="field-error" id="editErrorAmount"></span>
+        </div>
+        <div class="form-group">
+          <label for="editCategory">Category <span class="required">*</span></label>
+          <select id="editCategory"></select>
+          <span class="field-error" id="editErrorCategory"></span>
+        </div>
+        <div class="form-group form-group-full">
+          <label for="editDescription">Description <span class="required">*</span></label>
+          <input type="text" id="editDescription">
+          <span class="field-error" id="editErrorDescription"></span>
+        </div>
+        <div class="form-group">
+          <label for="editDate">Date <span class="required">*</span></label>
+          <input type="date" id="editDate">
+          <span class="field-error" id="editErrorDate"></span>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-secondary" id="editCancelBtn">Cancel</button>
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ===================== DELETE CONFIRM MODAL ===================== -->
+<div class="modal-overlay hidden" id="deleteModal">
+  <div class="modal modal-sm">
+    <div class="modal-header">
+      <h2>Delete Expense</h2>
+      <button class="modal-close" id="deleteModalClose">&times;</button>
+    </div>
+    <p class="modal-message">Are you sure you want to delete this expense? This action cannot be undone.</p>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" id="deleteCancelBtn">Cancel</button>
+      <button class="btn btn-danger" id="deleteConfirmBtn">Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== TOAST CONTAINER ===================== -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script src="script.js"></script>
+</body>
+</html>
